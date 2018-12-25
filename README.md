@@ -8,8 +8,16 @@ The dataset is based on cleaned Enron corpus, there are a total of 92188 message
 from ipynb.fs.full.dataset import spam_test_train_set
 [train_email, test_email] = spam_test_train_set()
 ```
-## Saved models
+## Requirements
+Ham_spam_email_classification relies on Python library **mailparser** to read through Enron emails and separate them into *To*,  *From*, *message_id*, *subject line*, *Body* and *Date*. 
 
+## Models
+|Model| Accuracy on validation |Precision on validation| 
+|:---|:---|:---|
+| PCA + Logistic regression|0.77| 0.70 |
+| 1D CNN |0.89 | 0.82 |
+## Saved models
+The model trained on trainning and validation set are saved in weights folder and can be used to test on other emails.
 ### PCA model
 ```
 filename = 'PCA_model.sav'
