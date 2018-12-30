@@ -22,13 +22,15 @@ def iter_emails(emaildir='enron_email_files', verbose=True):
 
     emails = []
     for filestat in tqdm(filestats):
-        try:
-            with open(filestat['path'], 'rb') as f:
-                email = parser.parsestr(f.read().decode())
-        except UnicodeDecodeError:
-            print_exc()
-            print('bad bytes file', open(filestat['path']))
-
+        email = None
+        for encoding in 'utf_8 latin_1 utf_16 shift_jis mac_latin2 iso8859_2 iso8859_3 iso8859_4 iso8859_5 iso8859_6 iso8859_7 iso8859_8 iso8859_9 iso8859_10 iso8859_13 iso8859_14 iso8859_15'.split():
+            try:
+                with open(filestat['path'], 'rb') as f:
+                    email = parser.parsestr(f.read().decode(encoding))
+                break
+            except UnicodeDecodeError:
+                print('file encoding was not {} for {}'.format(encoding, filestat['path']))
+        assert(bool(email))
         email_dict = {}
         for k in vars(email).keys():
             if k == '_headers':
