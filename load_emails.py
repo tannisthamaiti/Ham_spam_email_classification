@@ -23,13 +23,15 @@ def iter_emails(emaildir='enron_email_files', verbose=True):
     emails = []
     for filestat in tqdm(filestats):
         email = None
-        for encoding in 'utf_8 latin_1 utf_16 shift_jis mac_latin2 iso8859_2 iso8859_3 iso8859_4 iso8859_5 iso8859_6 iso8859_7 iso8859_8 iso8859_9 iso8859_10 iso8859_13 iso8859_14 iso8859_15'.split():
+        common_encodings = ('utf_8 latin_1 utf_16 shift_jis mac_latin2 iso8859_2 iso8859_3 iso8859_4 iso8859_5 iso8859_6 iso8859_7 iso8859_8 iso8859_9' +
+                            'iso8859_10 iso8859_13 iso8859_14 iso8859_15').split()
+        for i, encoding in enumerate(common_encodings):
             try:
                 with open(filestat['path'], 'rb') as f:
                     email = parser.parsestr(f.read().decode(encoding))
                 break
             except UnicodeDecodeError:
-                print('file encoding was not {} for {}'.format(encoding, filestat['path']))
+                print('file encoding was not {} for {}... retrying with {}'.format(encoding, filestat['path'], encodings[min(i + 1, len(encodings) - 1)]))
         assert(bool(email))
         email_dict = {}
         for k in vars(email).keys():
