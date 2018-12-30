@@ -3,6 +3,7 @@ import re
 import sys
 from email import parser as ep
 import json
+from traceback import print_exc
 
 from tqdm import tqdm
 import pandas as pd
@@ -11,19 +12,23 @@ from pugnlp import futil
 
 
 def iter_emails(emaildir='enron_email_files', verbose=True):
-    if verbose:
-        print('Indexing files and folders in {emaildir}'.format(emaildir=emaildir))
-    filestats = list(tqdm(futil.generate_files(emaildir)))
+    if isinstance(emaildir, list):
+        filestats = emaildir
+    else:
+        if verbose:
+            print('Indexing files and folders in {emaildir}'.format(emaildir=emaildir))
+        filestats = list(tqdm(futil.generate_files(emaildir)))
     parser = ep.Parser()
 
     emails = []
     for filestat in tqdm(filestats):
         try:
-            with open(filestat['path'], 'r') as f:
-                email = parser.parse(f)
-        except UnicodeDecodeError:
             with open(filestat['path'], 'rb') as f:
-                email = parser.parse(f)
+                email = parser.parsestr(f.read().decode())
+        except UnicodeDecodeError:
+            print_exc()
+            print('bad bytes file', open(filestat['path']))
+
         email_dict = {}
         for k in vars(email).keys():
             if k == '_headers':
