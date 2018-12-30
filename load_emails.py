@@ -94,4 +94,5 @@ if __name__ == '__main__':
     emails, email_users, users = parse_emails(emaildir=emaildir)
     print(emails.head())
     print(emails.shape)
-    print(df.describe())
+    print(emails.info())
+    print(emails.describe())
