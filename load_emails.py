@@ -1,7 +1,7 @@
 import os
 import re
 import sys
-import email.parser
+from email import parser as ep
 import json
 
 from tqdm import tqdm
@@ -14,25 +14,25 @@ def iter_emails(emaildir='enron_email_files', verbose=True):
     if verbose:
         print('Indexing files and folders in {emaildir}'.format(emaildir=emaildir))
     filestats = list(tqdm(futil.generate_files(emaildir)))
-    parser = email.parser.Parser()
+    parser = ep.Parser()
 
     emails = []
     for filestat in tqdm(filestats):
         try:
             with open(filestat['path'], 'r') as f:
-                e = parser.parse(f)
+                email = parser.parse(f)
         except UnicodeDecodeError:
             with open(filestat['path'], 'rb') as f:
-                e = parser.parse(f)
-        ed = {}
-        for k in vars(e).keys():
+                email = parser.parse(f)
+        email_dict = {}
+        for k in vars(email).keys():
             if k == '_headers':
-                ed.update(dict(e._headers))
+                email_dict.update(dict(email._headers))
             else:
-                ed[k.strip('_')] = getattr(e, k)
-        ed['folder'] = os.path.basename(os.path.dirname(f['path']))
-        ed['user'] = os.path.basename(os.path.dirname(os.path.dirname(f['path'])))
-        yield ed
+                email_dict[k.strip('_')] = getattr(email, k)
+        email_dict['folder'] = os.path.basename(os.path.dirname(filestat['path']))
+        email_dict['user'] = os.path.basename(os.path.dirname(os.path.dirname(filestat['path'])))
+        yield email_dict
 
 
 def normalize_colname(name):
@@ -66,8 +66,11 @@ def DataFrame(table, *args, **kwargs):
     return df
 
 
-def parse_emails(emaildir='/Users/hobsonlane/code/springboard/tannistha/enron_email_files'):
-    df = DataFrame(iter_emails(emaildir), index_col='Message-ID')
+def parse_emails(emaildir='/Users/hobsonlane/code/springboard/tannistha/enron_email_files', verbose=True):
+    emails = list(iter_emails(emaildir, verbose=verbose))
+    if verbose:
+        print(emails[:5])
+    df = DataFrame(emails, index_col='Message-ID')
     df = df.fillna('')
     df['defects'] = df['defects'].apply(str)  # otherwise these will be lists and NaNs
     email_users = []  # many-to-many table connecting emails to user email_addresses in the CC, TO, BCC, and FROM fields

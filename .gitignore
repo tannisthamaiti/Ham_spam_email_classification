@@ -1,0 +1,94 @@
+# Temporary and binary files
+*~
+*.py[cod]
+*.so
+# *.cfg
+!setup.cfg
+!setup27.cfg
+*.orig
+*.log
+*.pot
+__pycache__/*
+.cache/*
+.*.swp
+.~*
+.ipynb_checkpoints
+
+# Project files
+.ropeproject
+.project
+.pydevproject
+.settings
+.idea
+
+# Package files
+*.egg
+*.eggs/
+.installed.cfg
+*.egg-info
+
+# Unittest and coverage
+htmlcov/*
+.coverage*
+.tox
+junit.xml
+coverage.xml
+.pytest_cache/*
+
+# Build and docs folder/files
+build/*
+dist/*
+sdist/*
+docs/api/*
+docs/_build/*
+cover/*
+MANIFEST
+
+# secrets
+secret*
+!secrets.cfg.EXAMPLE_TEMPLATE
+
+# big data
+src/nlpia/data/bigdata_info.csv
+src/nlpia/bigdata/*
+src/nlpia/data/*.gz
+src/nlpia/data/*.bz2
+src/nlpia/data/*.xz
+src/nlpia/data/*.zip
+nlpia/bigdata/*
+nlpia/data/*.gz
+nlpia/data/*.bz2
+nlpia/data/*.xz
+nlpia/data/*.zip
+nlpia/bigdata/*.gz
+nlpia/bigdata/*.tgz
+*.h5
+*.hdf5
+*.h5py
+enron_email_files
+maildir
+
+# system files
+.DS_STore
+.vscode
+.coveralls.yml
+
+# Anaconda conda
+envs/
+record.txt
+
+# Backups
+*.bak.*
+*.old.*
+*.new.*
+*.fixed.*
+*.broke.*
+*.master.*
+*.develop.*
+
+# extracted bigdata
+src/nlpia/data/aiml-en-us-foundation-alice/
+
+# models
+*.ann
+
