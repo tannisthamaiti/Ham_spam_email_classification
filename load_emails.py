@@ -71,9 +71,12 @@ def DataFrame(table, *args, **kwargs):
     elif index_col is not False and index is not False and len(df) == len(df[df.columns[0]].dropna().unique()):
         df = df.set_index(df.columns[0])
     if df.index.name == 'message_id':
-        df.index = df.index.str.lstrip('<').str.rstrip('>').str.strip('.').str.strip("'").str.strip().split('.')
-        df.index.name = 'id'  # to be compatible with django
-        # df.index = pd.MultiIndex.from_tuples(pd.Series(df.index).apply(tuple), names=['i', 'j', 'server', 'name'])
+        df.reset_index()
+        df['message_id'] = pd.Series(df.index.values)
+        df['message_id_tuple'] = df.message_id.str.lstrip('<').str.rstrip('>').str.strip('.').str.strip("'").str.strip().str.split('.')
+        df['message_id_tuple'] = df['message_id_tuple'].apply(tuple)
+        # df.index = pd.MultiIndex.from_tuples(df.message_id, names=['id0', 'id1', 'id2', 'id3'])
+        # df.index.name = 'id'  # to be compatible with django
     return df
 
 
@@ -81,7 +84,8 @@ def parse_emails(emaildir='/Users/hobsonlane/code/springboard/tannistha/enron_em
     emails = list(iter_emails(emaildir, verbose=verbose))
     if verbose:
         print(emails[:5])
-    df = DataFrame(emails, index_col='Message-ID')
+    df = DataFrame(emails, index_col=False)
+    # df = DataFrame(emails, index_col='Message-ID')
     df.fillna('', inplace=True)
     df['defects'] = df['defects'].apply(str)  # otherwise these will be lists and NaNs
     email_users = []  # many-to-many table connecting emails to user email_addresses in the CC, TO, BCC, and FROM fields
