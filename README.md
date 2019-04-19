@@ -1,5 +1,5 @@
 ## Ham_spam_email_classification
-This repository contains code for the classification of ham and spam emails on subject lines using (1) PCA used with Logistic regression (2) CNN deep learning.
+This repository contains code for the classification of ham and spam emails on subject lines using (1) CNN (2) LSTM.
 
 ## Dataset
 The dataset is based on cleaned Enron corpus, there are a total of 92188 messages belonging to 158 users with an average of 757 messages per user. The dataset has almost an equal distribution of ham and spam emails. In this study 2000 emails are used 1000 ham + 1000 spams. The data are split into 1600 examples for training, 400 for validation and 58000 for testing.
